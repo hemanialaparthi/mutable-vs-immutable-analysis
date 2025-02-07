@@ -9,3 +9,16 @@ def append_to_sublists(list_of_lists, element):
 # new_element = 99
 # result = append_to_sublists(nested_list, new_element)
 # print(result)
+
+
+def append_to_list(input_list, element):
+    """Appends new element to the input list"""
+    input_list.append(element)
+    return input_list
+
+
+def concatenate_to_tuple(input_tuple, element):
+    """Concatenates new element to the input tuple"""
+    new_tuple = input_tuple + (element,)
+    return new_tuple
+
