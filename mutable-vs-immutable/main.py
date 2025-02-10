@@ -56,7 +56,7 @@ def run_experiment(sizes: List[int]):
 
 if __name__ == "__main__":
     START_SIZE = 500  # the starting size
-    NUM_DOUBLES = 4    # number of times to double
+    NUM_DOUBLES = 20    # number of times to double
 
     sizes = generate_test_sizes(START_SIZE, NUM_DOUBLES)
     run_experiment(sizes)
