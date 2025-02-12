@@ -23,11 +23,11 @@ def concatenate_to_tuple(input_tuple, element):
     return new_tuple
 
 def concatenate_nested_tuple(input_tuple, element):
-    """Concatenates new element to a nested tuple"""
+    """Concatenates a new element to each tuple in a nested tuple"""
     result_tuple = ()
     for item in input_tuple:
         if isinstance(item, tuple):
-            result_tuple += (item + element,)
+            result_tuple += (item + (element,),)
     return result_tuple
 
 
