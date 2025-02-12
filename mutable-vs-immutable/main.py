@@ -3,11 +3,11 @@ import statistics
 import random
 from typing import List, Callable, Tuple
 from functions import (
-    append_to_list, append_to_sublists, concatenate_to_tuple
+    append_to_list, append_to_sublists, concatenate_to_tuple, concatenate_nested_tuple
 )
 
 
-def generate_random_containers(size: int) -> Tuple[list, list, tuple]:
+def generate_random_containers(size: int) -> Tuple[list, list, tuple, tuple]:
     """Generate random containers of specified size"""
     base_list = [random.randint(1, 1000) for _ in range(size)]
 
@@ -15,7 +15,9 @@ def generate_random_containers(size: int) -> Tuple[list, list, tuple]:
 
     base_tuple = tuple(random.randint(1, 1000) for _ in range(size))
 
-    return base_list, nested_list, base_tuple
+    nested_tuple = tuple((random.randint(1, 1000), random.randint(1, 1000)) for _ in range(size // 2))
+
+    return base_list, nested_list, base_tuple, nested_tuple
 
 
 def generate_test_sizes(start_size: int, num_doubles: int) -> List[int]:
@@ -29,18 +31,18 @@ def time_operation(func: Callable, input_data, elements, num_runs: int = 10, num
         timeit.timeit(lambda: func(input_data.copy() if isinstance(input_data, list) else input_data, elements), number=num_runs)
         for _ in range(num_trials)
     ]
-    return statistics.median(times) / num_runs 
+    return statistics.median(times) / num_runs
 
 
 def run_experiment(sizes: List[int]):
     """Run the timing experiment and print results"""
     print("\nDoubling Experiment Results:")
     print("-" * 100)
-    print(f"{'Size':<12} {'List Append':>20} {'Nested List Append':>20} {'Tuple Concat':>20}")
-    print("-" * 100)
+    print(f"{'Size':<12} {'List Append':>20} {'Nested List Append':>20} {'Tuple Concat':>20} {'Nested Tuple Concat':>20}")
+    print("-" * 120)
     
     for size in sizes:
-        base_list, nested_list, base_tuple = generate_random_containers(size)
+        base_list, nested_list, base_tuple, nested_tuple = generate_random_containers(size)
 
         # generate a list of elements to append (matching container size)
         elements_to_add = [random.randint(1, 1000) for _ in range(size)]
@@ -49,14 +51,15 @@ def run_experiment(sizes: List[int]):
         list_time = time_operation(append_to_list, base_list.copy(), elements_to_add)
         nested_time = time_operation(append_to_sublists, [lst.copy() for lst in nested_list], elements_to_add)
         tuple_time = time_operation(concatenate_to_tuple, base_tuple, elements_to_add)
+        nested_tuple_time = time_operation(concatenate_nested_tuple, nested_tuple, elements_to_add)
 
         # print results in a formatted table
-        print(f"{size:<12} {list_time:>20.6f} {nested_time:>20.6f} {tuple_time:>20.6f}")
+        print(f"{size:<12} {list_time:>20.6f} {nested_time:>20.6f} {tuple_time:>20.6f} {nested_tuple_time:>20.6f}")
 
 
 if __name__ == "__main__":
     START_SIZE = 500  # the starting size
-    NUM_DOUBLES = 20    # number of times to double
+    NUM_DOUBLES = 10    # number of times to double
 
     sizes = generate_test_sizes(START_SIZE, NUM_DOUBLES)
     run_experiment(sizes)
