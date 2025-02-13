@@ -22,6 +22,7 @@ def concatenate_to_tuple(input_tuple, element):
     new_tuple = input_tuple + (element,)
     return new_tuple
 
+
 def concatenate_nested_tuple(input_tuple, element):
     """Concatenates a new element to each tuple in a nested tuple"""
     result_tuple = ()
