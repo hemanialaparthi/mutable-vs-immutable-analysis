@@ -32,16 +32,21 @@ def time_operation(func: Callable, input_data, elements, num_runs: int = 10, num
     return statistics.median(times) / num_runs 
 
 
-def run_experiment(sizes: List[int]):
+def run_experiment(sizes: List[int], num_runs: int = 10):
     """Run the timing experiment and print results"""
     print("\nDoubling Experiment Results:")
     print("-" * 100)
     print(f"{'Size':<12} {'List Append':>20} {'Nested List Append':>20} {'Tuple Concat':>20}")
     print("-" * 100)
-    
-    for size in sizes:
-        base_list, nested_list, base_tuple = generate_random_containers(size)
 
+    results = []
+    for size in sizes:
+        list_times = []
+        nested_times = []
+        tuple_times = []
+
+        for _ in range(num_runs):
+            base_list, nested_list, base_tuple = generate_random_containers(size)
         # generate a list of elements to append (matching container size)
         elements_to_add = [random.randint(1, 1000) for _ in range(size)]
 
@@ -50,8 +55,20 @@ def run_experiment(sizes: List[int]):
         nested_time = time_operation(append_to_sublists, [lst.copy() for lst in nested_list], elements_to_add)
         tuple_time = time_operation(concatenate_to_tuple, base_tuple, elements_to_add)
 
-        # print results in a formatted table
-        print(f"{size:<12} {list_time:>20.6f} {nested_time:>20.6f} {tuple_time:>20.6f}")
+        list_times.append(list_time)
+        nested_times.append(tuple_time)
+        tuple_times.append(tuple_time)
+
+    avg_list_time = statistics.mean(list_times)
+    avg_nested_time = statistics.mean(nested_times)
+    avg_tuple_time = statistics.mean(tuple_times)
+
+    stddev_list_time = statistics.stdev(list_times) if len(list_times) > 1 else None
+    stddev_nested_time = statistics.stdev(nested_times) if len(nested_times) > 1 else None
+    stddev_tuple_time = statistics.stdev(tuple_times) if len(tuple_times) > 1 else None
+
+    # print results in a formatted table
+    print(f"{size:<12} {list_time:>20.6f} {nested_time:>20.6f} {tuple_time:>20.6f}")
 
 
 if __name__ == "__main__":
@@ -59,4 +76,4 @@ if __name__ == "__main__":
     NUM_DOUBLES = 4    # number of times to double
 
     sizes = generate_test_sizes(START_SIZE, NUM_DOUBLES)
-    run_experiment(sizes)
+    run_experiment(sizes, num_runs=10)
