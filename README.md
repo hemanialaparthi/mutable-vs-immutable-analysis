@@ -7,7 +7,7 @@
 1. **Clone the Repository:**
    First, clone the repository to your local machine using Git:
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:hemanialaparthi/mutable-vs-immutable-analysis.git
    ````
 
 2. Navigate to the Project Directory: Change to the project directory:
