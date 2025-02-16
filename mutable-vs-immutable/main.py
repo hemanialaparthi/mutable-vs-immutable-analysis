@@ -10,9 +10,13 @@ from functions import (
 def generate_random_containers(size: int) -> Tuple[list, list, tuple, tuple]:
     """Generate random containers of specified size"""
     base_list = [random.randint(1, 1000) for _ in range(size)]
+
     nested_list = [[random.randint(1, 1000), random.randint(1, 1000)] for _ in range(size // 2)]
+
     base_tuple = tuple(random.randint(1, 1000) for _ in range(size))
+
     nested_tuple = tuple((random.randint(1, 1000), random.randint(1, 1000)) for _ in range(size // 2))
+
     return base_list, nested_list, base_tuple, nested_tuple
 
 
@@ -30,56 +34,32 @@ def time_operation(func: Callable, input_data, elements, num_runs: int = 10, num
     return statistics.median(times) / num_runs
 
 
-def run_experiment(sizes: List[int], num_runs: int):
+def run_experiment(sizes: List[int]):
     """Run the timing experiment and print results"""
     print("\nDoubling Experiment Results:")
     print("-" * 100)
     print(f"{'Size':<12} {'List Append':>20} {'Nested List Append':>20} {'Tuple Concat':>20} {'Nested Tuple Concat':>20}")
-    print("-" * 120)
+    print("-" * 100)
     
-    results = []
     for size in sizes:
-        list_times = []
-        nested_times = []
-        tuple_times = []
-        nested_tuple_times = []
+        base_list, nested_list, base_tuple, nested_tuple = generate_random_containers(size)
 
-        for _ in range(num_runs):
-            base_list, nested_list, base_tuple, nested_tuple = generate_random_containers(size)
-            # generate a list of elements to append (matching container size)
-            elements_to_add = [random.randint(1, 1000) for _ in range(size)]
+        # generate a list of elements to append (matching container size)
+        elements_to_add = [random.randint(1, 1000) for _ in range(size)]
 
-            # time each operation
-            list_time = time_operation(append_to_list, base_list.copy(), elements_to_add)
-            nested_time = time_operation(append_to_sublists, [lst.copy() for lst in nested_list], elements_to_add)
-            tuple_time = time_operation(concatenate_to_tuple, base_tuple, elements_to_add)
-            nested_tuple_time = time_operation(concatenate_nested_tuple, nested_tuple, elements_to_add)
-
-            list_times.append(list_time)
-            nested_times.append(nested_time)
-            tuple_times.append(tuple_time)
-            nested_tuple_times.append(nested_tuple_time)
-
-        avg_list_time = statistics.mean(list_times)
-        avg_nested_time = statistics.mean(nested_times)
-        avg_tuple_time = statistics.mean(tuple_times)
-        avg_nested_tuple_time = statistics.mean(nested_tuple_times)
-
-        stddev_list_time = statistics.stdev(list_times) if len(list_times) > 1 else None
-        stddev_nested_time = statistics.stdev(nested_times) if len(nested_times) > 1 else None
-        stddev_tuple_time = statistics.stdev(tuple_times) if len(tuple_times) > 1 else None
-        stddev_nested_tuple_time = statistics.stdev(nested_tuple_times) if len(nested_tuple_times) > 1 else None
+        # time each operation
+        list_time = time_operation(append_to_list, base_list.copy(), elements_to_add)
+        nested_time = time_operation(append_to_sublists, [lst.copy() for lst in nested_list], elements_to_add)
+        tuple_time = time_operation(concatenate_to_tuple, base_tuple, elements_to_add)
+        nested_tuple_time = time_operation(concatenate_nested_tuple, nested_tuple, elements_to_add)
 
         # print results in a formatted table
-        print(f"{size:<12} {avg_list_time:>20.6f} {avg_nested_time:>20.6f} {avg_tuple_time:>20.6f} {avg_nested_tuple_time:>20.6f}")
-
-        results.append([size, avg_list_time, avg_nested_time, avg_tuple_time, avg_nested_tuple_time, stddev_list_time, stddev_nested_time, stddev_tuple_time, stddev_nested_tuple_time])
+        print(f"{size:<12} {list_time:>20.6f} {nested_time:>20.6f} {tuple_time:>20.6f} {nested_tuple_time:>20.6f}")
 
 
 if __name__ == "__main__":
     START_SIZE = 1000  # the starting size
-    NUM_DOUBLES = 9    # number of times to double
-    NUM_RUNS = 3
+    NUM_DOUBLES = 10    # number of times to double
 
     sizes = generate_test_sizes(START_SIZE, NUM_DOUBLES)
-    run_experiment(sizes, num_runs=NUM_RUNS)
+    run_experiment(sizes)
