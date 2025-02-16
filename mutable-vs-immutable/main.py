@@ -39,7 +39,7 @@ def run_experiment(sizes: List[int]):
     print("\nDoubling Experiment Results:")
     print("-" * 100)
     print(f"{'Size':<12} {'List Append':>20} {'Nested List Append':>20} {'Tuple Concat':>20} {'Nested Tuple Concat':>20}")
-    print("-" * 120)
+    print("-" * 100)
     
     for size in sizes:
         base_list, nested_list, base_tuple, nested_tuple = generate_random_containers(size)
@@ -58,7 +58,7 @@ def run_experiment(sizes: List[int]):
 
 
 if __name__ == "__main__":
-    START_SIZE = 500  # the starting size
+    START_SIZE = 1000  # the starting size
     NUM_DOUBLES = 10    # number of times to double
 
     sizes = generate_test_sizes(START_SIZE, NUM_DOUBLES)
